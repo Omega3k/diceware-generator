@@ -9,12 +9,35 @@
   :dependencies [[org.clojure/clojure "1.9.0-alpha17"]
                  [org.clojure/clojurescript "1.9.908"]
                  [org.clojure/core.async  "0.3.443"]
-                 [reagent "0.7.0"]]
+                 [reagent "0.7.0"]
+                 [compojure "1.6.0"]
+                 [ring/ring-jetty-adapter "1.6.2"]
+                 [environ "1.1.0"]
+                 [ring/ring-defaults "0.3.1"]]
 
   :plugins [[lein-figwheel "0.5.13"]
-            [lein-cljsbuild "1.1.7" :exclusions [[org.clojure/clojure]]]]
+            [lein-cljsbuild "1.1.7" :exclusions [[org.clojure/clojure]]]
+            [lein-ring "0.9.7"]]
 
   :source-paths ["src"]
+
+  ;; :ring {:handler diceware-generator.handler/app}
+
+  :ring {:handler diceware-generator.server/application}
+
+  :uberjar-name "diceware-generator.jar"
+
+
+  :uberjar {:source-paths ["src"]
+            :hooks [leiningen.cljsbuild]
+            :env {:production true}
+            :omit-source true
+            :aot :all
+            :main diceware-generator.server
+            :cljsbuild {:builds {:app
+                                 {:source-paths ["src"]
+                                  :compiler {:optimizations :advanced
+                                             :pretty-print false}}}}}
 
   :cljsbuild {:builds
               [{:id "dev"
@@ -49,7 +72,7 @@
                            :optimizations :advanced
                            :pretty-print false}}]}
 
-  :figwheel {;; :http-server-root "public" ;; default and assumes "resources"
+  :figwheel { ;; :http-server-root "public" ;; default and assumes "resources"
              ;; :server-port 3449 ;; default
              ;; :server-ip "127.0.0.1"
 
@@ -66,6 +89,15 @@
 
              ;; :ring-handler hello_world.server/handler
 
+             ;; if you want to disable the REPL
+             ;; :repl false
+
+             ;; to configure a different figwheel logfile path
+             ;; :server-logfile "tmp/logs/figwheel-logfile.log"
+
+             ;; to pipe all the output to the repl
+             ;; :server-logfile false
+
              ;; To be able to open files in your editor from the heads up display
              ;; you will need to put a script on your path.
              ;; that script will have to take a file path and a line number
@@ -76,17 +108,7 @@
              ;; :open-file-command "myfile-opener"
 
              ;; if you are using emacsclient you can just use
-             ;; :open-file-command "emacsclient"
-
-             ;; if you want to disable the REPL
-             ;; :repl false
-
-             ;; to configure a different figwheel logfile path
-             ;; :server-logfile "tmp/logs/figwheel-logfile.log"
-
-             ;; to pipe all the output to the repl
-             ;; :server-logfile false
-             }
+             :open-file-command "emacsclient"}
 
 
   ;; Setting up nREPL for Figwheel and ClojureScript dev
@@ -94,7 +116,9 @@
   ;; https://github.com/bhauman/lein-figwheel/wiki/Using-the-Figwheel-REPL-within-NRepl
   :profiles {:dev {:dependencies [[binaryage/devtools "0.9.4"]
                                   [figwheel-sidecar "0.5.13"]
-                                  [com.cemerick/piggieback "0.2.2"]]
+                                  [com.cemerick/piggieback "0.2.2"]
+                                  [javax.servlet/servlet-api "2.5"]
+                                  [ring/ring-mock "0.3.1"]]
                    ;; need to add dev source path here to get user.clj loaded
                    :source-paths ["src" "dev"]
                    ;; for CIDER
@@ -102,4 +126,6 @@
                    :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
                    ;; need to add the compliled assets to the :clean-targets
                    :clean-targets ^{:protect false} ["resources/public/js/compiled"
-                                                     :target-path]}})
+                                                     :target-path]}
+
+             :production {:env {:production true}}})
