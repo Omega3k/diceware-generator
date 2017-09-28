@@ -18,11 +18,7 @@
 
 (defroutes routes
   (GET "/" []
-    #_{:status 200
-     :headers {"Content-Type" "text/html"}
-     :body (slurp (io/resource "public/index.html"))}
-     (slurp (io/resource "public/index.html"))
-    #_(splash))
+     (slurp (io/resource "public/index.html")))
   (GET "*" [filepath]
     (slurp (io/resource (str "public/" filepath))))
   (ANY "*" []
