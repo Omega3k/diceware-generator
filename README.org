@@ -10,45 +10,54 @@ FIXME: Write a paragraph about the library/project and highlight its goals.
 
 To get an interactive development environment run:
 
-    lein figwheel
+#+BEGIN_SRC shell
+# start front-end development server
+lein figwheel
 
-    lein ring server
+# start back-end development server
+lein ring server
+#+END_SRC
 
-and open your browser at [localhost:3449](http://localhost:3449/).
-This will auto compile and send all changes to the browser without the
-need to reload. After the compilation process is complete, you will
-get a Browser Connected REPL. An easy way to try it is:
+and open your browser at [[http://localhost:3449][localhost:3449]]. This will auto compile and
+send all changes to the browser without the need to reload. After the
+compilation process is complete, you will get a Browser Connected
+REPL. An easy way to try it is:
 
-    (js/alert "Am I connected?")
+#+BEGIN_SRC clojure
+(js/alert "Am I connected?")
+#+END_SRC
 
 and you should see an alert in the browser window.
 
 To clean all compiled files:
 
-    lein clean
+#+BEGIN_SRC shell
+lein clean
+#+END_SRC
 
 To create a production build run:
 
-    lein do clean, cljsbuild once min
+#+BEGIN_SRC shell
+lein do clean, cljsbuild once min
+lein with-profile -dev,+production uberjar
+#+END_SRC
 
-    lein with-profile -dev,+production uberjar
-
-    java $JVM_OPTS -cp target/diceware-generator.jar clojure.main -m diceware-generator.server
-
-    heroku local web
-
-    git push heroku master
-
-    heroku open
+#+BEGIN_SRC shell
+heroku local web
+git push heroku master
+heroku open
+#+END_SRC
 
 And open your browser in `resources/public/index.html`. You will not
 get live reloading, nor a REPL.
 
 This project was created with:
 
-     lein new figwheel diceware-generator -- --reagent
-
-     heroku create
+#+BEGIN_SRC shell
+lein new figwheel diceware-generator -- --reagent
+cd diceware-generator
+heroku create
+#+END_SRC
 
 ** License
 
